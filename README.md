@@ -49,15 +49,72 @@ This guide will help you set up and run the **Break Reminder** script on your sy
 
 ## Running the Script
 
-1. Open a terminal and navigate to the folder containing the script:
-   ```bash
-   cd /path/to/script
+### 1. Open a terminal and navigate to the folder containing the script:
+```bash
+cd /path/to/script
+```
 
-2. Run the script:
-  ```bash
-  nohup python3 break_reminder.py &
-  
-  This will log all outputs into the `nohup.out` file.
+### 2. Running the Script
+
+#### a. Running in the Background
+
+To run the break_reminder.py script in the background and log the output:
+
+```bash
+nohup python3 break_reminder.py > break_reminder.log 2>&1 &
+```
+
+This command will:
+  - Keep the script running even if you close the terminal (thanks to `nohup`).
+  - Redirect both standard output and error to the `break_reminder.log` file.
+  - Run the script in the background (`&`).
+
+#### b. Running in the Background Without Logging
+
+If you don’t need to log the output, simply run the script in the background:
+
+```bash
+python3 break_reminder.py &
+```
+
+This will run the script in the background but without logging the output.
+
+#### c. Running in the Foreground
+
+To run the script in the foreground (so you can see output in the terminal):
+
+```python3
+python3 break_reminder.py
+```
+
+### 3. Managing Processes
+
+#### a. Check if the Script is Running
+
+To check if the script is running, use the following command:
+
+```bash
+ps aux | grep break_reminder.py
+```
+
+#### b. Stop the Script
+
+To stop the script, use the kill command with the process ID (PID) you found in the previous step:
+
+```bash
+kill <PID>
+```
+
+#### c. View Logs in Real-Time
+
+If you ran the script with logging enabled, you can view the log file in real-time using:
+
+```bash
+tail -f break_reminder.log
+```
+
+
+---
 
 ## Features
   - **Eye Break Reminder**: Notifies you every 20 minutes to look away from the screen for 20 seconds.
@@ -71,14 +128,18 @@ This guide will help you set up and run the **Break Reminder** script on your sy
   Edit this line in the script:
   ```python3
   if datetime.now().weekday() <= 4 and 7 <= datetime.now().hour < 18:
+  ```
   Adjust 7 and 18 to your desired start and end hours.
+  
   - **Adjust Frequencies**:
   Modify the scheduling logic in the `schedule_reminders()` function:
   ```
   schedule.every(20).minutes.do(BreakReminder.remind_to_look_away)
   schedule.every().hour.at(":00").do(BreakReminder.remind_to_refill_water)
   ```
+
   - **Change Notification Audio**:
   Replace `./water.wav` and `blink.wav` with the path to your desired audio file:
   ```python3
   notification.audio = "/path/to/your_audio_file.wav"
+  ```
